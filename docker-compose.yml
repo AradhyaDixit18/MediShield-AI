@@ -1,0 +1,26 @@
+# Run the whole MediShield AI stack locally with one command:
+#   docker compose up --build
+# Then open http://localhost:4173  (backend on http://localhost:8010)
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8010:8000"
+    environment:
+      - CORS_ORIGINS=*
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend-web
+      args:
+        # The browser calls the backend directly, so this is the host URL.
+        VITE_API_URL: http://localhost:8010
+    ports:
+      - "4173:80"
+    depends_on:
+      - backend

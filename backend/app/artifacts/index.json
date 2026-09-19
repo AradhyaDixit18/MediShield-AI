@@ -1,0 +1,38 @@
+{
+  "diabetes": {
+    "title": "Diabetes Risk",
+    "metrics": {
+      "roc_auc": 0.8154,
+      "accuracy": 0.7468,
+      "f1": 0.6422,
+      "n_samples": 768,
+      "n_positive": 268,
+      "prevalence": 0.349
+    },
+    "n_fields": 8
+  },
+  "heart": {
+    "title": "Heart Disease Risk",
+    "metrics": {
+      "roc_auc": 0.8939,
+      "accuracy": 0.8197,
+      "f1": 0.8,
+      "n_samples": 303,
+      "n_positive": 138,
+      "prevalence": 0.4554
+    },
+    "n_fields": 13
+  },
+  "stroke": {
+    "title": "Stroke Risk",
+    "metrics": {
+      "roc_auc": 0.822,
+      "accuracy": 0.8787,
+      "f1": 0.2619,
+      "n_samples": 5110,
+      "n_positive": 249,
+      "prevalence": 0.0487
+    },
+    "n_fields": 10
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "name": "diabetes",
+  "title": "Diabetes Risk",
+  "positive_label": "Likely diabetic",
+  "target": "Outcome",
+  "fields": [
+    {
+      "name": "Pregnancies",
+      "label": "Pregnancies",
+      "type": "number",
+      "min": 0,
+      "max": 17,
+      "step": 1,
+      "unit": "",
+      "default": 1,
+      "help": "Number of times pregnant"
+    },
+    {
+      "name": "Glucose",
+      "label": "Glucose",
+      "type": "number",
+      "min": 40,
+      "max": 300,
+      "step": 1,
+      "unit": "mg/dL",
+      "default": 117,
+      "zero_is_missing": true,
+      "help": "Plasma glucose concentration (oral glucose tolerance test)"
+    },
+    {
+      "name": "BloodPressure",
+      "label": "Blood Pressure",
+      "type": "number",
+      "min": 30,
+      "max": 180,
+      "step": 1,
+      "unit": "mm Hg",
+      "default": 72,
+      "zero_is_missing": true,
+      "help": "Diastolic blood pressure"
+    },
+    {
+      "name": "SkinThickness",
+      "label": "Skin Thickness",
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "mm",
+      "default": 23,
+      "zero_is_missing": true,
+      "help": "Triceps skinfold thickness"
+    },
+    {
+      "name": "Insulin",
+      "label": "Insulin",
+      "type": "number",
+      "min": 0,
+      "max": 900,
+      "step": 1,
+      "unit": "mu U/ml",
+      "default": 30,
+      "zero_is_missing": true,
+      "help": "2-hour serum insulin"
+    },
+    {
+      "name": "BMI",
+      "label": "BMI",
+      "type": "number",
+      "min": 10,
+      "max": 70,
+      "step": 0.1,
+      "unit": "kg/m\u00b2",
+      "default": 32,
+      "zero_is_missing": true,
+      "help": "Body mass index"
+    },
+    {
+      "name": "DiabetesPedigreeFunction",
+      "label": "Pedigree Function",
+      "type": "number",
+      "min": 0.05,
+      "max": 2.5,
+      "step": 0.01,
+      "unit": "",
+      "default": 0.37,
+      "help": "Diabetes likelihood based on family history"
+    },
+    {
+      "name": "Age",
+      "label": "Age",
+      "type": "number",
+      "min": 1,
+      "max": 120,
+      "step": 1,
+      "unit": "years",
+      "default": 33,
+      "help": "Age in years"
+    }
+  ],
+  "spec": {
+    "numeric_fields": [
+      {
+        "name": "Pregnancies",
+        "median": 3.0,
+        "zero_is_missing": false
+      },
+      {
+        "name": "Glucose",
+        "median": 117.0,
+        "zero_is_missing": true
+      },
+      {
+        "name": "BloodPressure",
+        "median": 72.0,
+        "zero_is_missing": true
+      },
+      {
+        "name": "SkinThickness",
+        "median": 29.0,
+        "zero_is_missing": true
+      },
+      {
+        "name": "Insulin",
+        "median": 125.0,
+        "zero_is_missing": true
+      },
+      {
+        "name": "BMI",
+        "median": 32.3,
+        "zero_is_missing": true
+      },
+      {
+        "name": "DiabetesPedigreeFunction",
+        "median": 0.3725,
+        "zero_is_missing": false
+      },
+      {
+        "name": "Age",
+        "median": 29.0,
+        "zero_is_missing": false
+      }
+    ],
+    "categorical_fields": []
+  },
+  "processed_columns": [
+    "Pregnancies",
+    "Glucose",
+    "BloodPressure",
+    "SkinThickness",
+    "Insulin",
+    "BMI",
+    "DiabetesPedigreeFunction",
+    "Age"
+  ],
+  "field_index_map": {
+    "Pregnancies": [
+      0
+    ],
+    "Glucose": [
+      1
+    ],
+    "BloodPressure": [
+      2
+    ],
+    "SkinThickness": [
+      3
+    ],
+    "Insulin": [
+      4
+    ],
+    "BMI": [
+      5
+    ],
+    "DiabetesPedigreeFunction": [
+      6
+    ],
+    "Age": [
+      7
+    ]
+  },
+  "metrics": {
+    "roc_auc": 0.8154,
+    "accuracy": 0.7468,
+    "f1": 0.6422,
+    "n_samples": 768,
+    "n_positive": 268,
+    "prevalence": 0.349
+  },
+  "base_rate": 0.349
+}

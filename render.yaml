@@ -1,0 +1,16 @@
+# Render.com Blueprint — one-click backend deploy.
+# In Render: New > Blueprint > connect the MediShield-AI repo. This builds the
+# FastAPI backend from backend/Dockerfile on the free plan.
+services:
+  - type: web
+    name: medishield-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: LLM_API_KEY
+        sync: false

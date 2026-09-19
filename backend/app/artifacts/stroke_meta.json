@@ -1,0 +1,316 @@
+{
+  "name": "stroke",
+  "title": "Stroke Risk",
+  "positive_label": "Elevated stroke risk",
+  "target": "stroke",
+  "fields": [
+    {
+      "name": "gender",
+      "label": "Gender",
+      "type": "select",
+      "default": "Female",
+      "categorical": true,
+      "options": [
+        {
+          "value": "Male",
+          "label": "Male"
+        },
+        {
+          "value": "Female",
+          "label": "Female"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ],
+      "help": "Gender"
+    },
+    {
+      "name": "age",
+      "label": "Age",
+      "type": "number",
+      "min": 1,
+      "max": 120,
+      "step": 1,
+      "unit": "years",
+      "default": 45,
+      "help": "Age in years"
+    },
+    {
+      "name": "hypertension",
+      "label": "Hypertension",
+      "type": "toggle",
+      "default": 0,
+      "help": "Diagnosed with hypertension"
+    },
+    {
+      "name": "heart_disease",
+      "label": "Heart Disease",
+      "type": "toggle",
+      "default": 0,
+      "help": "Diagnosed with heart disease"
+    },
+    {
+      "name": "ever_married",
+      "label": "Ever Married",
+      "type": "select",
+      "default": "Yes",
+      "categorical": true,
+      "options": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ],
+      "help": "Has the person ever been married"
+    },
+    {
+      "name": "work_type",
+      "label": "Work Type",
+      "type": "select",
+      "default": "Private",
+      "categorical": true,
+      "options": [
+        {
+          "value": "Private",
+          "label": "Private"
+        },
+        {
+          "value": "Self-employed",
+          "label": "Self-employed"
+        },
+        {
+          "value": "Govt_job",
+          "label": "Government job"
+        },
+        {
+          "value": "children",
+          "label": "Children"
+        },
+        {
+          "value": "Never_worked",
+          "label": "Never worked"
+        }
+      ],
+      "help": "Type of employment"
+    },
+    {
+      "name": "Residence_type",
+      "label": "Residence Type",
+      "type": "select",
+      "default": "Urban",
+      "categorical": true,
+      "options": [
+        {
+          "value": "Urban",
+          "label": "Urban"
+        },
+        {
+          "value": "Rural",
+          "label": "Rural"
+        }
+      ],
+      "help": "Residence type"
+    },
+    {
+      "name": "avg_glucose_level",
+      "label": "Avg Glucose Level",
+      "type": "number",
+      "min": 50,
+      "max": 300,
+      "step": 0.1,
+      "unit": "mg/dL",
+      "default": 106,
+      "help": "Average glucose level in blood"
+    },
+    {
+      "name": "bmi",
+      "label": "BMI",
+      "type": "number",
+      "min": 10,
+      "max": 70,
+      "step": 0.1,
+      "unit": "kg/m\u00b2",
+      "default": 28.9,
+      "help": "Body mass index"
+    },
+    {
+      "name": "smoking_status",
+      "label": "Smoking Status",
+      "type": "select",
+      "default": "never smoked",
+      "categorical": true,
+      "options": [
+        {
+          "value": "never smoked",
+          "label": "Never smoked"
+        },
+        {
+          "value": "formerly smoked",
+          "label": "Formerly smoked"
+        },
+        {
+          "value": "smokes",
+          "label": "Smokes"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "help": "Smoking status"
+    }
+  ],
+  "spec": {
+    "numeric_fields": [
+      {
+        "name": "age",
+        "median": 45.0,
+        "zero_is_missing": false
+      },
+      {
+        "name": "hypertension",
+        "median": 0.0,
+        "zero_is_missing": false
+      },
+      {
+        "name": "heart_disease",
+        "median": 0.0,
+        "zero_is_missing": false
+      },
+      {
+        "name": "avg_glucose_level",
+        "median": 91.88499999999999,
+        "zero_is_missing": false
+      },
+      {
+        "name": "bmi",
+        "median": 28.1,
+        "zero_is_missing": false
+      }
+    ],
+    "categorical_fields": [
+      {
+        "name": "gender",
+        "categories": [
+          "Male",
+          "Female",
+          "Other"
+        ]
+      },
+      {
+        "name": "ever_married",
+        "categories": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "name": "work_type",
+        "categories": [
+          "Private",
+          "Self-employed",
+          "Govt_job",
+          "children",
+          "Never_worked"
+        ]
+      },
+      {
+        "name": "Residence_type",
+        "categories": [
+          "Urban",
+          "Rural"
+        ]
+      },
+      {
+        "name": "smoking_status",
+        "categories": [
+          "never smoked",
+          "formerly smoked",
+          "smokes",
+          "Unknown"
+        ]
+      }
+    ]
+  },
+  "processed_columns": [
+    "age",
+    "hypertension",
+    "heart_disease",
+    "avg_glucose_level",
+    "bmi",
+    "gender=Male",
+    "gender=Female",
+    "gender=Other",
+    "ever_married=Yes",
+    "ever_married=No",
+    "work_type=Private",
+    "work_type=Self-employed",
+    "work_type=Govt_job",
+    "work_type=children",
+    "work_type=Never_worked",
+    "Residence_type=Urban",
+    "Residence_type=Rural",
+    "smoking_status=never smoked",
+    "smoking_status=formerly smoked",
+    "smoking_status=smokes",
+    "smoking_status=Unknown"
+  ],
+  "field_index_map": {
+    "age": [
+      0
+    ],
+    "hypertension": [
+      1
+    ],
+    "heart_disease": [
+      2
+    ],
+    "avg_glucose_level": [
+      3
+    ],
+    "bmi": [
+      4
+    ],
+    "gender": [
+      5,
+      6,
+      7
+    ],
+    "ever_married": [
+      8,
+      9
+    ],
+    "work_type": [
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "Residence_type": [
+      15,
+      16
+    ],
+    "smoking_status": [
+      17,
+      18,
+      19,
+      20
+    ]
+  },
+  "metrics": {
+    "roc_auc": 0.822,
+    "accuracy": 0.8787,
+    "f1": 0.2619,
+    "n_samples": 5110,
+    "n_positive": 249,
+    "prevalence": 0.0487
+  },
+  "base_rate": 0.0487
+}
