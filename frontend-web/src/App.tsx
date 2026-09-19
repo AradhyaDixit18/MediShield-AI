@@ -18,6 +18,7 @@ function Navbar() {
         </Link>
         <div className="flex items-center gap-6">
           <NavLink to="/" end className={linkClass}>Home</NavLink>
+          <NavLink to="/report" className={linkClass}>Report</NavLink>
           <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
           <NavLink to="/about" className={linkClass}>About</NavLink>
           <a

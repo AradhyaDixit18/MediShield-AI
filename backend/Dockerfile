@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 
-# libgomp1 is required by XGBoost
-RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
+# libgomp1 for XGBoost; tesseract-ocr for scanned-report OCR
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

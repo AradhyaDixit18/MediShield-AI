@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ShieldPlus, Droplet, HeartPulse, Activity, Brain, Sparkles,
-  LineChart, Lock, ArrowRight, Stethoscope,
+  LineChart, Lock, ArrowRight, Stethoscope, FileScan,
 } from "lucide-react";
 import { getDiseases, type DiseaseSummary } from "../lib/api";
 import { DISEASE_META } from "../lib/ui";
@@ -109,6 +109,26 @@ export default function Home() {
             );
           })}
         </div>
+      </section>
+
+      {/* Report analysis banner */}
+      <section className="mx-auto max-w-6xl px-5 py-10">
+        <Link to="/report" className="glass glass-hover group flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-brand-500/10 text-brand-400 ring-1 ring-brand-500/20">
+              <FileScan size={24} />
+            </div>
+            <div>
+              <span className="eyebrow">New</span>
+              <h3 className="mt-1 font-display text-2xl font-semibold text-white">Analyze a lab report</h3>
+              <p className="mt-1.5 max-w-xl text-sm text-slate-400">
+                Upload a blood-test or lab report (PDF or image). MediShield reads every value, flags what's
+                outside the normal range, and explains it in plain language.
+              </p>
+            </div>
+          </div>
+          <span className="btn-primary shrink-0">Upload a report <ArrowRight size={18} /></span>
+        </Link>
       </section>
 
       {/* Features */}

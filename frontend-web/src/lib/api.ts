@@ -90,3 +90,42 @@ export const predict = (disease: string, features: Record<string, unknown>) =>
 
 export const getCapabilities = () =>
   client.get<{ copilot_enabled: boolean }>("/api/capabilities").then((r) => r.data);
+
+// ---- Report analysis ----
+export interface MarkerResult {
+  key: string;
+  name: string;
+  category: string;
+  value: number;
+  unit: string;
+  ref_low: number;
+  ref_high: number;
+  ref_source: "report" | "standard";
+  status: "Low" | "Normal" | "High";
+  about: string;
+  note: string;
+  advice: string;
+  related: string;
+}
+
+export interface ReportResult {
+  method: string;
+  summary: string;
+  counts: { total: number; abnormal: number; normal: number };
+  flagged: MarkerResult[];
+  results: MarkerResult[];
+  categories: { name: string; markers: MarkerResult[] }[];
+  related_assessments: string[];
+  disclaimer: string;
+}
+
+export const analyzeReport = (file: File) => {
+  const form = new FormData();
+  form.append("file", file);
+  return client
+    .post<ReportResult>("/api/report/analyze", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 60000,
+    })
+    .then((r) => r.data);
+};

@@ -52,3 +52,25 @@ def test_predict_heart_high_risk_is_high():
 
 def test_unknown_disease_404():
     assert client.get("/api/diseases/cancer/schema").status_code == 404
+
+
+def test_report_parsing_from_text():
+    from app.services.report import analyze_text
+    text = (
+        "Fasting Glucose 142 mg/dL 70 - 99\n"
+        "HbA1c 6.8 % 4.0 - 5.6\n"
+        "Total Cholesterol 236 mg/dL 0 - 200\n"
+        "HDL Cholesterol 38 mg/dL 40 - 60\n"
+        "Hemoglobin 14.6 g/dL 13.0 - 17.0\n"
+        "Vitamin D 18 ng/mL 30 - 100\n"
+    )
+    d = analyze_text(text)
+    names = {r["name"] for r in d["results"]}
+    assert "Total Cholesterol" in names and "HDL Cholesterol" in names
+    # total cholesterol must not be confused with HDL's value
+    tc = next(r for r in d["results"] if r["name"] == "Total Cholesterol")
+    assert tc["value"] == 236.0 and tc["status"] == "High"
+    hb = next(r for r in d["results"] if r["name"] == "Hemoglobin")
+    assert hb["status"] == "Normal"
+    assert d["counts"]["abnormal"] >= 4
+    assert "diabetes" in d["related_assessments"]
