@@ -5,10 +5,11 @@ import { bandColor } from "../lib/ui";
 interface Props {
   percent: number;
   band: string;
-  timesAverage: number;
+  timesAverage?: number;
+  guideline?: boolean;
 }
 
-export default function RiskGauge({ percent, band, timesAverage }: Props) {
+export default function RiskGauge({ percent, band, timesAverage, guideline }: Props) {
   const colors = bandColor(band);
   const size = 240;
   const stroke = 16;
@@ -44,9 +45,13 @@ export default function RiskGauge({ percent, band, timesAverage }: Props) {
       <div className={`mt-5 rounded-full px-4 py-1.5 text-sm font-semibold ${colors.bg} ${colors.text}`}>
         {band}
       </div>
-      <p className="mt-2 text-sm text-slate-400">
-        <span className={`font-semibold ${colors.text}`}>{timesAverage}×</span> the population average
-      </p>
+      {guideline ? (
+        <p className="mt-2 text-sm text-slate-400">Guideline-based screening</p>
+      ) : (
+        <p className="mt-2 text-sm text-slate-400">
+          <span className={`font-semibold ${colors.text}`}>{timesAverage}×</span> the population average
+        </p>
+      )}
     </div>
   );
 }

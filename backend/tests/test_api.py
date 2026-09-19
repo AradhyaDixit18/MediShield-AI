@@ -20,7 +20,7 @@ def test_health():
 def test_list_diseases():
     r = client.get("/api/diseases")
     ids = {d["id"] for d in r.json()["diseases"]}
-    assert ids == {"diabetes", "heart", "stroke"}
+    assert {"diabetes", "heart", "stroke"} <= ids
 
 
 def test_schema_has_fields():
@@ -74,3 +74,30 @@ def test_report_parsing_from_text():
     assert hb["status"] == "Normal"
     assert d["counts"]["abnormal"] >= 4
     assert "diabetes" in d["related_assessments"]
+
+
+def test_oral_screening_high_and_low():
+    high = client.post("/api/predict/oral", json={"features": {
+        "age": 52, "sugar_frequency": "5+", "brushing": "less", "flossing": "never",
+        "last_dentist": ">2y", "bleeding_gums": 1, "tooth_pain": 1, "visible_cavity": 1,
+        "dry_mouth": 1, "tobacco": 1, "diabetes": 1}}).json()
+    low = client.post("/api/predict/oral", json={"features": {
+        "age": 24, "sugar_frequency": "0", "brushing": "twice", "flossing": "daily",
+        "last_dentist": "<6", "bleeding_gums": 0, "tooth_pain": 0, "visible_cavity": 0,
+        "dry_mouth": 0, "tobacco": 0, "diabetes": 0}}).json()
+    assert high["risk_percent"] > low["risk_percent"]
+    assert high["kind"] == "guideline"
+    assert high["band"] in ("High", "Very high")
+    assert "triage" in high and len(high["recommendations"]) > 0
+
+
+def test_oral_in_disease_list():
+    ids = {d["id"] for d in client.get("/api/diseases").json()["diseases"]}
+    assert "oral" in ids
+
+
+def test_report_txt_flags_and_ranges():
+    from app.services.report import analyze_text
+    d = analyze_text("Total Cholesterol: 245 mg/dL (0-200) H\nHDL: 35 mg/dL (40-60) L\n")
+    tc = next(r for r in d["results"] if r["name"] == "Total Cholesterol")
+    assert tc["status"] == "High"

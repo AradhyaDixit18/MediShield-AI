@@ -31,11 +31,14 @@ export interface Field {
   options?: FieldOption[];
 }
 
+export type MetricsLike = Partial<Metrics> & { basis?: string };
+
 export interface DiseaseSummary {
   id: string;
   title: string;
-  metrics: Metrics;
+  metrics: MetricsLike;
   n_fields: number;
+  kind?: string;
 }
 
 export interface DiseaseSchema {
@@ -43,7 +46,8 @@ export interface DiseaseSchema {
   title: string;
   positive_label: string;
   fields: Field[];
-  metrics: Metrics;
+  metrics: MetricsLike;
+  kind?: string;
 }
 
 export interface Factor {
@@ -67,14 +71,16 @@ export interface PredictResult {
   title: string;
   probability: number;
   risk_percent: number;
-  base_rate: number;
-  times_average: number;
+  base_rate?: number;
+  times_average?: number;
   band: string;
   positive_label: string;
+  kind?: "guideline" | string;
+  triage?: string;
   top_factors: Factor[];
   all_factors: Factor[];
   recommendations: Recommendation[];
-  model_metrics: Metrics;
+  model_metrics: Record<string, unknown>;
   disclaimer: string;
 }
 

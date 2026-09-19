@@ -4,11 +4,13 @@ export const DISEASE_META: Record<string, { label: string; blurb: string; accent
   diabetes: { label: "Diabetes", blurb: "Estimate diabetes risk from clinical and lifestyle indicators.", accent: "#10b981", icon: "droplet" },
   heart: { label: "Heart Disease", blurb: "Assess cardiovascular risk from ECG, blood pressure and lipid factors.", accent: "#f43f5e", icon: "heart" },
   stroke: { label: "Stroke", blurb: "Gauge stroke susceptibility from vascular and demographic factors.", accent: "#38bdf8", icon: "activity" },
+  oral: { label: "Oral & Dental", blurb: "Screen your oral-health risk from diet, hygiene, and symptoms.", accent: "#a78bfa", icon: "smile" },
 };
 
 export function bandColor(band: string): { text: string; ring: string; hex: string; bg: string } {
   switch (band) {
     case "Below average":
+    case "Low":
       return { text: "text-emerald-400", ring: "stroke-emerald-400", hex: "#34d399", bg: "bg-emerald-500/10" };
     case "Moderate":
       return { text: "text-amber-400", ring: "stroke-amber-400", hex: "#fbbf24", bg: "bg-amber-500/10" };
@@ -55,7 +57,7 @@ export function saveHistory(result: PredictResult): HistoryEntry[] {
     title: result.title,
     risk_percent: result.risk_percent,
     band: result.band,
-    times_average: result.times_average,
+    times_average: result.times_average ?? 0,
     at: Date.now(),
   };
   try {

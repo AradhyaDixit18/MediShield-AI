@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Loader2, Sparkles, Info, ShieldAlert, RotateCcw } from "lucide-react";
+import { ArrowLeft, Loader2, Sparkles, Info, ShieldAlert, RotateCcw, CalendarClock } from "lucide-react";
 import { getSchema, predict, type DiseaseSchema, type Field, type PredictResult } from "../lib/api";
 import { DISEASE_META, severityStyle, saveHistory } from "../lib/ui";
 import RiskGauge from "../components/RiskGauge";
@@ -72,8 +72,17 @@ export default function Assess() {
         </div>
         {schema && (
           <div className="hidden shrink-0 text-right sm:block">
-            <div className="text-xs uppercase tracking-widest text-slate-500">Model ROC-AUC</div>
-            <div className="font-display text-3xl font-bold" style={{ color: meta.accent }}>{schema.metrics.roc_auc}</div>
+            {schema.metrics?.roc_auc ? (
+              <>
+                <div className="text-xs uppercase tracking-widest text-slate-500">Model ROC-AUC</div>
+                <div className="font-display text-3xl font-bold" style={{ color: meta.accent }}>{schema.metrics.roc_auc}</div>
+              </>
+            ) : (
+              <>
+                <div className="text-xs uppercase tracking-widest text-slate-500">Screening</div>
+                <div className="font-display text-lg font-semibold" style={{ color: meta.accent }}>Guideline-based</div>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -120,17 +129,28 @@ export default function Assess() {
                 className="space-y-6"
               >
                 <div className="glass flex flex-col items-center p-7">
-                  <RiskGauge percent={result.risk_percent} band={result.band} timesAverage={result.times_average} />
+                  <RiskGauge percent={result.risk_percent} band={result.band} timesAverage={result.times_average} guideline={result.kind === "guideline"} />
                   <p className="mt-5 text-center text-sm text-slate-400">
-                    Estimated probability of <span className="text-slate-200">{result.positive_label.toLowerCase()}</span>,
-                    based on the values you entered.
+                    {result.kind === "guideline"
+                      ? <>Your estimated <span className="text-slate-200">{result.positive_label.toLowerCase()}</span>, based on your answers.</>
+                      : <>Estimated probability of <span className="text-slate-200">{result.positive_label.toLowerCase()}</span>, based on the values you entered.</>}
                   </p>
                 </div>
+
+                {result.triage && (
+                  <div className="glass flex items-start gap-3 p-5" style={{ borderColor: "rgba(167,139,250,0.35)" }}>
+                    <CalendarClock size={20} className="mt-0.5 shrink-0 text-violet-300" />
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-violet-300">Recommended next step</div>
+                      <p className="mt-1 text-sm text-slate-200">{result.triage}</p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="glass p-6 sm:p-7">
                   <div className="mb-4 flex items-center gap-2">
                     <h3 className="font-display text-lg font-semibold text-white">Why this result</h3>
-                    <span className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">SHAP</span>
+                    <span className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">{result.kind === "guideline" ? "Factors" : "SHAP"}</span>
                   </div>
                   <FactorChart factors={result.top_factors} />
                 </div>

@@ -42,13 +42,13 @@ export default function About() {
         <div className="glass mt-6 p-6 sm:p-7">
           <h3 className="mb-4 font-display text-lg font-semibold text-white">Model performance</h3>
           <div className="grid gap-4 sm:grid-cols-3">
-            {diseases.map((d) => (
+            {diseases.filter((d) => d.metrics?.roc_auc).map((d) => (
               <div key={d.id} className="rounded-xl border border-white/5 bg-white/[0.02] p-5">
                 <div className="font-medium text-white">{d.title}</div>
                 <div className="mt-3 space-y-1.5 text-sm text-slate-400">
                   <div className="flex justify-between"><span>ROC-AUC</span><b className="text-brand-300">{d.metrics.roc_auc}</b></div>
                   <div className="flex justify-between"><span>Accuracy</span><span className="text-slate-300">{d.metrics.accuracy}</span></div>
-                  <div className="flex justify-between"><span>Samples</span><span className="text-slate-300">{d.metrics.n_samples.toLocaleString()}</span></div>
+                  <div className="flex justify-between"><span>Samples</span><span className="text-slate-300">{d.metrics.n_samples?.toLocaleString()}</span></div>
                 </div>
               </div>
             ))}

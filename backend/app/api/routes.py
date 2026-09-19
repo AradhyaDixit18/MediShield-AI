@@ -8,21 +8,39 @@ from app.schemas.prediction import PredictRequest, PredictResponse
 from app.services.model_registry import get_registry
 from app.services.predict import predict
 from app.services import report as report_service
+from app.services import oral as oral_service
 
 router = APIRouter()
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
 
+ORAL_SUMMARY = {
+    "id": "oral",
+    "title": oral_service.TITLE,
+    "kind": "guideline",
+    "metrics": {"basis": "WHO Oral Health & ADA risk factors"},
+    "n_fields": len(oral_service.FIELDS),
+}
+
 
 @router.get("/diseases")
 def list_diseases():
     """List available disease models with their metrics."""
-    return {"diseases": get_registry().list_diseases()}
+    return {"diseases": get_registry().list_diseases() + [ORAL_SUMMARY]}
 
 
 @router.get("/diseases/{disease}/schema")
 def disease_schema(disease: str):
     """Return the form field schema + metrics for one disease (drives the UI form)."""
+    if disease == "oral":
+        return {
+            "id": "oral",
+            "title": oral_service.TITLE,
+            "positive_label": oral_service.POSITIVE_LABEL,
+            "fields": oral_service.FIELDS,
+            "metrics": {"basis": "WHO Oral Health & ADA risk factors"},
+            "kind": "guideline",
+        }
     try:
         m = get_registry().get(disease)
     except KeyError:
@@ -36,15 +54,20 @@ def disease_schema(disease: str):
     }
 
 
-@router.post("/predict/{disease}", response_model=PredictResponse)
+@router.post("/predict/{disease}")
 def predict_disease(disease: str, body: PredictRequest):
-    """Run a risk prediction with SHAP explanation and recommendations."""
+    """Run a risk prediction/screening with explanation and recommendations."""
+    if not body.features:
+        raise HTTPException(status_code=422, detail="No features provided")
+    if disease == "oral":
+        try:
+            return oral_service.assess(body.features)
+        except Exception as e:  # noqa: BLE001
+            raise HTTPException(status_code=500, detail=f"Screening failed: {e}")
     try:
         m = get_registry().get(disease)
     except KeyError:
         raise HTTPException(status_code=404, detail=f"Unknown disease '{disease}'")
-    if not body.features:
-        raise HTTPException(status_code=422, detail="No features provided")
     try:
         return predict(m, body.features)
     except Exception as e:  # noqa: BLE001
