@@ -48,7 +48,9 @@ class ReportError(Exception):
 # --------------------------------------------------------------------------- #
 # Extraction
 # --------------------------------------------------------------------------- #
-_OCR_CONFIGS = ["--oem 3 --psm 6", "--oem 3 --psm 4", "--oem 3 --psm 3", "--oem 3 --psm 11"]
+# Kept lightweight: heavy OCR now happens client-side. This server path is only a
+# fallback and must stay cheap enough not to stall a small free instance.
+_OCR_CONFIGS = ["--oem 3 --psm 6"]
 
 
 def _prep_image(img: "Image.Image") -> "Image.Image":
@@ -57,8 +59,8 @@ def _prep_image(img: "Image.Image") -> "Image.Image":
         img = img.convert("L")
         w, h = img.size
         longest = max(w, h)
-        if longest < 1800:
-            scale = 1800.0 / longest
+        if longest < 1500:
+            scale = 1500.0 / longest
             img = img.resize((int(w * scale), int(h * scale)))
         img = ImageOps.autocontrast(img)
         img = img.filter(ImageFilter.SHARPEN)
@@ -98,7 +100,7 @@ def _ocr_pdf(data: bytes) -> str:
     try:
         doc = pymupdf.open(stream=data, filetype="pdf")
         for page in doc:
-            pix = page.get_pixmap(dpi=300)
+            pix = page.get_pixmap(dpi=200)
             out.append(_ocr_image(Image.open(io.BytesIO(pix.tobytes("png")))))
     except Exception:
         return ""

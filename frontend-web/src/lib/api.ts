@@ -135,3 +135,9 @@ export const analyzeReport = (file: File) => {
     })
     .then((r) => r.data);
 };
+
+// Analyze text already extracted in the browser (OCR done client-side).
+export const analyzeReportText = (text: string, method: string) =>
+  client
+    .post<ReportResult>("/api/report/analyze-text", { text, method }, { timeout: 30000 })
+    .then((r) => r.data);

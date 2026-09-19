@@ -32,3 +32,6 @@ datasets/raw/
 
 # Docker
 docker-data/
+
+# Cowork/desktop app scratch
+Claude outputs/

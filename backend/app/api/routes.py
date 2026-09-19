@@ -91,6 +91,20 @@ async def analyze_report(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Report analysis failed: {e}")
 
 
+@router.post("/report/analyze-text")
+def analyze_report_text(body: dict):
+    """Analyze already-extracted report text (e.g. OCR done in the browser).
+    Lightweight: no OCR or file rendering on the server."""
+    text = (body or {}).get("text", "")
+    if not isinstance(text, str) or not text.strip():
+        raise HTTPException(status_code=422, detail="No text provided")
+    method = (body.get("method") if isinstance(body, dict) else None) or "client"
+    try:
+        return report_service.analyze_text(text, str(method))
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {e}")
+
+
 @router.get("/capabilities")
 def capabilities():
     """Report which optional features are active (e.g. LLM copilot)."""

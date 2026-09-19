@@ -5,7 +5,8 @@ import {
   UploadCloud, FileText, Loader2, AlertTriangle, CheckCircle2,
   Info, ArrowRight, ScanLine,
 } from "lucide-react";
-import { analyzeReport, type ReportResult, type MarkerResult } from "../lib/api";
+import { analyzeReport, analyzeReportText, type ReportResult, type MarkerResult } from "../lib/api";
+import { extractText, isClientExtractable } from "../lib/extract";
 import { DISEASE_META } from "../lib/ui";
 
 function statusStyle(status: string) {
@@ -26,6 +27,7 @@ export default function Report() {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState<{ pct: number; label: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReportResult | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,16 +44,31 @@ export default function Report() {
 
   async function run() {
     if (!file) return;
-    setLoading(true); setError(null);
+    setLoading(true); setError(null); setProgress(null);
     try {
-      const r = await analyzeReport(file);
+      let r: ReportResult;
+      if (isClientExtractable(file)) {
+        // OCR / text extraction happens in the browser (fast, reliable, no server strain)
+        setProgress({ pct: 0, label: "Preparing" });
+        const extracted = await extractText(file, (pct, label) => setProgress({ pct, label }));
+        if (!extracted || extracted.text.trim().length < 15) {
+          setError("We couldn't read enough text from this file. Try a clearer, well-lit photo or a text-based PDF.");
+          return;
+        }
+        setProgress({ pct: 1, label: "Analyzing values" });
+        r = await analyzeReportText(extracted.text, extracted.method);
+      } else {
+        // DOCX / TXT -> lightweight server parsing
+        r = await analyzeReport(file);
+      }
       setResult(r);
       setTimeout(() => document.getElementById("report-result")?.scrollIntoView({ behavior: "smooth" }), 100);
     } catch (e: unknown) {
       const detail = (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-      setError(detail || "Could not analyze this file. Try a clearer PDF or image.");
+      setError(detail || "Could not analyze this file. Try a clearer photo, a PDF, or a Word document.");
     } finally {
       setLoading(false);
+      setProgress(null);
     }
   }
 
@@ -91,7 +108,9 @@ export default function Report() {
         <div className="mt-5 flex gap-3">
           <button onClick={() => inputRef.current?.click()} className="btn-ghost">Choose file</button>
           <button onClick={run} disabled={!file || loading} className="btn-primary">
-            {loading ? <><Loader2 size={18} className="animate-spin" /> Analyzing…</> : <><ScanLine size={18} /> Analyze report</>}
+            {loading
+              ? <><Loader2 size={18} className="animate-spin" /> {progress ? `${progress.label}${progress.pct ? ` ${Math.round(progress.pct * 100)}%` : ""}…` : "Analyzing…"}</>
+              : <><ScanLine size={18} /> Analyze report</>}
           </button>
         </div>
         {error && (
